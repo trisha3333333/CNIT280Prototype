@@ -7,8 +7,14 @@
 </head>
 <body>
 
-<header>
+<header class="navbar">
     <div class="logo">Whispering Hills</div>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="family-register.html">Family Registration</a>
+        <a href="volunteer-register.html">Volunteer Registration</a>
+        <a href="employee-dashboard.html">Employee Dashboard</a>
+    </nav>
 </header>
 
 <section class="form-section">
@@ -17,11 +23,8 @@
     <form id="volunteerForm">
         <input type="text" id="volName" placeholder="Full Name" required>
         <input type="email" id="volEmail" placeholder="Email" required>
+        <input type="text" id="volSkills" placeholder="Skills (e.g. Teaching, Transportation)" required>
 
-        <label>Skills</label>
-        <input type="text" id="volSkills" placeholder="Ex: Teaching, Event Planning, Transportation" required>
-
-        <label>Availability</label>
         <select id="volAvailability">
             <option>Weekdays</option>
             <option>Weekends</option>
@@ -29,8 +32,10 @@
             <option>Flexible</option>
         </select>
 
-        <button type="submit" class="btn">Register as Volunteer</button>
+        <button type="submit" class="btn">Register Volunteer</button>
     </form>
+
+    <p id="volunteerSuccess" class="success-msg">Volunteer successfully registered!</p>
 </section>
 
 <script src="script.js"></script>
