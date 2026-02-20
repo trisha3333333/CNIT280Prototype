@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Volunteer Registration</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
@@ -11,19 +11,19 @@
     <div class="logo">Whispering Hills</div>
     <nav>
         <a href="index.html">Home</a>
-        <a href="family-register.html">Family Registration</a>
-        <a href="volunteer-register.html">Volunteer Registration</a>
-        <a href="employee-dashboard.html">Employee Dashboard</a>
+        <a href="family.html">Family Registration</a>
+        <a href="volunteer.html" class="active">Volunteer Registration</a>
+        <a href="dashboard.html">Employee Dashboard</a>
     </nav>
 </header>
 
-<section class="form-section">
+<main class="container">
     <h2>Volunteer Registration</h2>
 
     <form id="volunteerForm">
         <input type="text" id="volName" placeholder="Full Name" required>
         <input type="email" id="volEmail" placeholder="Email" required>
-        <input type="text" id="volSkills" placeholder="Skills (e.g. Teaching, Transportation)" required>
+        <input type="text" id="volSkills" placeholder="Skills" required>
 
         <select id="volAvailability">
             <option>Weekdays</option>
@@ -32,12 +32,12 @@
             <option>Flexible</option>
         </select>
 
-        <button type="submit" class="btn">Register Volunteer</button>
+        <button type="submit">Register</button>
     </form>
 
-    <p id="volunteerSuccess" class="success-msg">Volunteer successfully registered!</p>
-</section>
+    <p id="volunteerSuccess" class="success-msg">Volunteer registered successfully!</p>
+</main>
 
-<script src="script.js"></script>
+<script src="js/script.js"></script>
 </body>
 </html>
