@@ -1,8 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
 
-    // ===============================
-    // FAMILY REGISTRATION
-    // ===============================
+    // FAMILY FORM
     const familyForm = document.getElementById("familyForm");
 
     if (familyForm) {
@@ -20,19 +18,12 @@ document.addEventListener("DOMContentLoaded", function () {
             families.push(family);
             localStorage.setItem("families", JSON.stringify(families));
 
-            alert("Family Registered Successfully!");
-
-            // Redirect to dashboard after short delay
-            setTimeout(() => {
-                window.location.href = "employee-dashboard.html";
-            }, 800);
+            document.getElementById("familySuccess").style.display = "block";
+            familyForm.reset();
         });
     }
 
-
-    // ===============================
-    // VOLUNTEER REGISTRATION
-    // ===============================
+    // VOLUNTEER FORM
     const volunteerForm = document.getElementById("volunteerForm");
 
     if (volunteerForm) {
@@ -50,26 +41,19 @@ document.addEventListener("DOMContentLoaded", function () {
             volunteers.push(volunteer);
             localStorage.setItem("volunteers", JSON.stringify(volunteers));
 
-            alert("Volunteer Registered Successfully!");
-
-            setTimeout(() => {
-                window.location.href = "employee-dashboard.html";
-            }, 800);
+            document.getElementById("volunteerSuccess").style.display = "block";
+            volunteerForm.reset();
         });
     }
 
-
-    // ===============================
-    // DISPLAY DATA ON DASHBOARD
-    // ===============================
+    // DISPLAY DATA
     const familyTable = document.querySelector("#familyTable tbody");
     const volunteerTable = document.querySelector("#volunteerTable tbody");
 
     if (familyTable) {
         let families = JSON.parse(localStorage.getItem("families")) || [];
-
         families.forEach(f => {
-            const row = `
+            familyTable.innerHTML += `
                 <tr>
                     <td>${f.name}</td>
                     <td>${f.email}</td>
@@ -77,15 +61,13 @@ document.addEventListener("DOMContentLoaded", function () {
                     <td>${f.needs}</td>
                 </tr>
             `;
-            familyTable.innerHTML += row;
         });
     }
 
     if (volunteerTable) {
         let volunteers = JSON.parse(localStorage.getItem("volunteers")) || [];
-
         volunteers.forEach(v => {
-            const row = `
+            volunteerTable.innerHTML += `
                 <tr>
                     <td>${v.name}</td>
                     <td>${v.email}</td>
@@ -93,7 +75,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     <td>${v.availability}</td>
                 </tr>
             `;
-            volunteerTable.innerHTML += row;
         });
     }
 
