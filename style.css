@@ -4,11 +4,27 @@ body {
     background: #f4f6f9;
 }
 
-header {
+.navbar {
     background: #1e3a8a;
+    padding: 15px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar a {
     color: white;
-    padding: 20px;
-    text-align: center;
+    margin-left: 20px;
+    text-decoration: none;
+}
+
+.navbar a:hover {
+    text-decoration: underline;
+}
+
+.logo {
+    color: white;
+    font-weight: bold;
 }
 
 .hero {
@@ -18,35 +34,26 @@ header {
     color: white;
 }
 
-.btn {
-    background: #10b981;
-    padding: 12px 20px;
-    color: white;
-    border-radius: 8px;
-    text-decoration: none;
-    display: inline-block;
-    margin-top: 15px;
-}
-
-.btn-secondary {
-    background: white;
-    color: #2563eb;
-    padding: 12px 20px;
-    border-radius: 8px;
-    text-decoration: none;
-}
-
 .form-section, .dashboard {
     padding: 40px;
     margin: 40px;
     background: white;
-    border-radius: 12px;
+    border-radius: 10px;
 }
 
 input, textarea, select {
     width: 100%;
     padding: 10px;
     margin-bottom: 15px;
+}
+
+.btn {
+    background: #10b981;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
 }
 
 table {
@@ -58,4 +65,10 @@ table {
 table th, table td {
     border: 1px solid #ddd;
     padding: 10px;
+}
+
+.success-msg {
+    display: none;
+    color: green;
+    font-weight: bold;
 }
