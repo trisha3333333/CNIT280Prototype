@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Volunteer Registration</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+    <div class="logo">Whispering Hills</div>
+</header>
+
+<section class="form-section">
+    <h2>Volunteer Registration</h2>
+
+    <form id="volunteerForm">
+        <input type="text" id="volName" placeholder="Full Name" required>
+        <input type="email" id="volEmail" placeholder="Email" required>
+
+        <label>Skills</label>
+        <input type="text" id="volSkills" placeholder="Ex: Teaching, Event Planning, Transportation" required>
+
+        <label>Availability</label>
+        <select id="volAvailability">
+            <option>Weekdays</option>
+            <option>Weekends</option>
+            <option>Evenings</option>
+            <option>Flexible</option>
+        </select>
+
+        <button type="submit" class="btn">Register as Volunteer</button>
+    </form>
+</section>
+
+<script src="script.js"></script>
+</body>
+</html>
