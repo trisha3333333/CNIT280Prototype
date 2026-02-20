@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Family Registration</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
@@ -11,13 +11,13 @@
     <div class="logo">Whispering Hills</div>
     <nav>
         <a href="index.html">Home</a>
-        <a href="family-register.html">Family Registration</a>
-        <a href="volunteer-register.html">Volunteer Registration</a>
-        <a href="employee-dashboard.html">Employee Dashboard</a>
+        <a href="family.html" class="active">Family Registration</a>
+        <a href="volunteer.html">Volunteer Registration</a>
+        <a href="dashboard.html">Employee Dashboard</a>
     </nav>
 </header>
 
-<section class="form-section">
+<main class="container">
     <h2>Family Registration</h2>
 
     <form id="familyForm">
@@ -25,13 +25,12 @@
         <input type="email" id="familyEmail" placeholder="Email" required>
         <input type="text" id="familyPhone" placeholder="Phone Number" required>
         <textarea id="familyNeeds" placeholder="Describe Special Needs" required></textarea>
-
-        <button type="submit" class="btn">Submit</button>
+        <button type="submit">Submit</button>
     </form>
 
-    <p id="familySuccess" class="success-msg">Family successfully registered!</p>
-</section>
+    <p id="familySuccess" class="success-msg">Family registered successfully!</p>
+</main>
 
-<script src="script.js"></script>
+<script src="js/script.js"></script>
 </body>
 </html>
