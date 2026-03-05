@@ -2,34 +2,24 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Family Registration</title>
+    <title>Family Portal</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-<header class="navbar">
-    <div class="logo">Whispering Hills</div>
-    <nav>
-        <a href="index.html">Home</a>
-        <a href="family.html" class="active">Family Registration</a>
-        <a href="volunteer.html">Volunteer Registration</a>
-        <a href="dashboard.html">Employee Dashboard</a>
-    </nav>
-</header>
+<button onclick="logout()">Logout</button>
 
-<main class="container">
-    <h2>Family Registration</h2>
+<h2>Family Registration</h2>
+<form id="familyForm">
+<input type="text" id="familyName" placeholder="Name" required>
+<input type="email" id="familyEmail" placeholder="Email" required>
+<input type="text" id="familyPhone" placeholder="Phone" required>
+<input type="text" id="familyNeeds" placeholder="Needs/Interests" required>
+<button type="submit">Submit</button>
+</form>
 
-    <form id="familyForm">
-        <input type="text" id="familyName" placeholder="Family Name" required>
-        <input type="email" id="familyEmail" placeholder="Email" required>
-        <input type="text" id="familyPhone" placeholder="Phone Number" required>
-        <textarea id="familyNeeds" placeholder="Describe Special Needs" required></textarea>
-        <button type="submit">Submit</button>
-    </form>
-
-    <p id="familySuccess" class="success-msg">Family registered successfully!</p>
-</main>
+<h2>Matched Opportunities</h2>
+<div id="familyMatches"></div>
 
 <script src="js/script.js"></script>
 </body>
