@@ -1,28 +1,46 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title>Whispering Hills Login</title>
-    <link rel="stylesheet" href="css/style.css">
+<meta charset="UTF-8">
+<title>Whispering Hills</title>
+<link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-<div class="login-container">
-    <h1>Whispering Hills System</h1>
+<header class="topbar">
+    <div class="logo">Whispering Hills</div>
+    <a href="login.html" class="btn-primary">Login</a>
+</header>
 
-    <select id="roleSelect">
-        <option value="">Select Role</option>
-        <option value="employee">Employee</option>
-        <option value="family">Family</option>
-        <option value="volunteer">Volunteer</option>
-    </select>
+<section class="hero">
+    <h1>Community Resource Management Platform</h1>
+    <p>
+        Connecting families, volunteers, and opportunities
+        through a centralized and secure system.
+    </p>
+    <a href="login.html" class="btn-primary large">Access Portal</a>
+</section>
 
-    <input type="text" id="username" placeholder="Username">
-    <input type="password" id="password" placeholder="Password">
+<section class="features">
+    <div class="feature-card">
+        <h3>Family Support</h3>
+        <p>Securely store and manage family needs and preferences.</p>
+    </div>
 
-    <button onclick="login()">Login</button>
-</div>
+    <div class="feature-card">
+        <h3>Volunteer Coordination</h3>
+        <p>Track skills and availability for community outreach.</p>
+    </div>
 
-<script src="js/script.js"></script>
+    <div class="feature-card">
+        <h3>Opportunity Matching</h3>
+        <p>Match families with relevant opportunities efficiently.</p>
+    </div>
+</section>
+
+<footer>
+    © 2026 Whispering Hills
+</footer>
+
 </body>
 </html>
