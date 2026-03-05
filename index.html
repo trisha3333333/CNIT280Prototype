@@ -1,29 +1,27 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
-    <title>Whispering Hills</title>
+    <title>Whispering Hills Login</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-<header class="navbar">
-    <div class="logo">Whispering Hills</div>
-    <nav>
-        <a href="index.html" class="active">Home</a>
-        <a href="family.html">Family Registration</a>
-        <a href="volunteer.html">Volunteer Registration</a>
-        <a href="dashboard.html">Employee Dashboard</a>
-    </nav>
-</header>
+<div class="login-container">
+    <h1>Whispering Hills System</h1>
 
-<main class="container">
-    <h1>Community Resource Connection System</h1>
-    <p>
-        Manage family contact information, volunteer skills, 
-        and availability in one centralized system.
-    </p>
-</main>
+    <select id="roleSelect">
+        <option value="">Select Role</option>
+        <option value="employee">Employee</option>
+        <option value="family">Family</option>
+        <option value="volunteer">Volunteer</option>
+    </select>
+
+    <input type="text" id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Password">
+
+    <button onclick="login()">Login</button>
+</div>
 
 <script src="js/script.js"></script>
 </body>
