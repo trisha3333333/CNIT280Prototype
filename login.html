@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Login - Whispering Hills</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="login-wrapper">
+    <div class="login-card">
+        <h2>System Login</h2>
+
+        <select id="roleSelect">
+            <option value="">Select Role</option>
+            <option value="employee">Employee</option>
+            <option value="family">Family</option>
+            <option value="volunteer">Volunteer</option>
+        </select>
+
+        <input type="text" id="username" placeholder="Username">
+        <input type="password" id="password" placeholder="Password">
+
+        <button onclick="login()" class="btn-primary">Login</button>
+    </div>
+</div>
+
+<script src="js/script.js"></script>
+</body>
+</html>
