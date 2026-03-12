@@ -1,8 +1,8 @@
 // LOGIN
 function login() {
-    const role = document.getElementById("roleSelect").value;
-    const user = document.getElementById("username").value;
-    const pass = document.getElementById("password").value;
+    const role = roleSelect.value;
+    const user = username.value;
+    const pass = password.value;
 
     if (role === "employee" && user === "admin" && pass === "admin123") {
         localStorage.setItem("role", "employee");
@@ -26,129 +26,145 @@ function logout() {
     window.location.href = "index.html";
 }
 
-// FAMILY FORM
 document.addEventListener("DOMContentLoaded", function() {
 
-    const familyForm = document.getElementById("familyForm");
+    loadDashboard();
+    loadPendingForms();
+
     if (familyForm) {
         familyForm.addEventListener("submit", function(e) {
             e.preventDefault();
-
-            const family = {
+            let family = {
                 name: familyName.value,
                 email: familyEmail.value,
                 phone: familyPhone.value,
                 needs: familyNeeds.value
             };
-
-            let families = JSON.parse(localStorage.getItem("families")) || [];
-            families.push(family);
-            localStorage.setItem("families", JSON.stringify(families));
-
+            let pending = JSON.parse(localStorage.getItem("pendingForms")) || [];
+            pending.push(family);
+            localStorage.setItem("pendingForms", JSON.stringify(pending));
             familyForm.reset();
-            alert("Family Registered");
+            alert("Submitted for approval");
         });
     }
 
-    const volunteerForm = document.getElementById("volunteerForm");
     if (volunteerForm) {
         volunteerForm.addEventListener("submit", function(e) {
             e.preventDefault();
-
-            const volunteer = {
+            let volunteer = {
                 name: volName.value,
                 email: volEmail.value,
                 skills: volSkills.value,
                 availability: volAvailability.value
             };
-
             let volunteers = JSON.parse(localStorage.getItem("volunteers")) || [];
             volunteers.push(volunteer);
             localStorage.setItem("volunteers", JSON.stringify(volunteers));
-
             volunteerForm.reset();
             alert("Volunteer Registered");
         });
     }
-
-    loadDashboard();
 });
 
-// LOAD DASHBOARD
 function loadDashboard() {
+    let familyTable = document.querySelector("#familyTable tbody");
+    if (!familyTable) return;
 
-    const familyTable = document.querySelector("#familyTable tbody");
-    if (familyTable) {
-        let families = JSON.parse(localStorage.getItem("families")) || [];
-        familyTable.innerHTML = "";
+    let families = JSON.parse(localStorage.getItem("families")) || [];
+    familyTable.innerHTML = "";
 
-        families.forEach((f, index) => {
-            familyTable.innerHTML += `
-                <tr>
-                    <td>${f.name}</td>
-                    <td>${f.email}</td>
-                    <td>${f.phone}</td>
-                    <td>${f.needs}</td>
-                    <td>
-                        <button onclick="deleteFamily(${index})">Delete</button>
-                    </td>
-                </tr>
-            `;
-        });
-    }
+    families.forEach((f, i) => {
+        familyTable.innerHTML += `
+        <tr>
+            <td>${f.name}</td>
+            <td>${f.email}</td>
+            <td>${f.phone}</td>
+            <td>${f.needs}</td>
+            <td><button onclick="deleteFamily(${i})">Delete</button></td>
+        </tr>`;
+    });
 
-    const volunteerTable = document.querySelector("#volunteerTable tbody");
-    if (volunteerTable) {
-        let volunteers = JSON.parse(localStorage.getItem("volunteers")) || [];
-        volunteerTable.innerHTML = "";
-
-        volunteers.forEach(v => {
-            volunteerTable.innerHTML += `
-                <tr>
-                    <td>${v.name}</td>
-                    <td>${v.email}</td>
-                    <td>${v.skills}</td>
-                    <td>${v.availability}</td>
-                </tr>
-            `;
-        });
-    }
+    let volunteerTable = document.querySelector("#volunteerTable tbody");
+    let volunteers = JSON.parse(localStorage.getItem("volunteers")) || [];
+    volunteerTable.innerHTML = "";
+    volunteers.forEach(v => {
+        volunteerTable.innerHTML += `
+        <tr>
+            <td>${v.name}</td>
+            <td>${v.email}</td>
+            <td>${v.skills}</td>
+            <td>${v.availability}</td>
+        </tr>`;
+    });
 }
 
-// DELETE FAMILY (Req 302)
-function deleteFamily(index) {
+function approveSubmission(i) {
+    let pending = JSON.parse(localStorage.getItem("pendingForms")) || [];
     let families = JSON.parse(localStorage.getItem("families")) || [];
-    families.splice(index, 1);
+    families.push(pending[i]);
+    pending.splice(i, 1);
+    localStorage.setItem("families", JSON.stringify(families));
+    localStorage.setItem("pendingForms", JSON.stringify(pending));
+    loadDashboard();
+    loadPendingForms();
+}
+
+function loadPendingForms() {
+    let container = document.getElementById("pendingSubmissions");
+    if (!container) return;
+    let pending = JSON.parse(localStorage.getItem("pendingForms")) || [];
+    container.innerHTML = "";
+    pending.forEach((p, i) => {
+        container.innerHTML += `
+        <div>
+            ${p.name} - ${p.email}
+            <button onclick="approveSubmission(${i})">Approve</button>
+        </div>`;
+    });
+}
+
+function deleteFamily(i) {
+    let families = JSON.parse(localStorage.getItem("families")) || [];
+    families.splice(i, 1);
     localStorage.setItem("families", JSON.stringify(families));
     loadDashboard();
 }
 
-// ADD OPPORTUNITY
 function addOpportunity() {
-    const title = document.getElementById("oppTitle").value;
-    const keyword = document.getElementById("oppKeyword").value;
-
     let opportunities = JSON.parse(localStorage.getItem("opportunities")) || [];
-    opportunities.push({ title, keyword });
+    opportunities.push({title: oppTitle.value, keyword: oppKeyword.value});
     localStorage.setItem("opportunities", JSON.stringify(opportunities));
-
     alert("Opportunity Added");
 }
 
-// MATCHING (Req 501 & 502)
 function matchFamilies() {
     let families = JSON.parse(localStorage.getItem("families")) || [];
     let opportunities = JSON.parse(localStorage.getItem("opportunities")) || [];
-
     let results = "";
-
     families.forEach(f => {
         opportunities.forEach(o => {
             if (f.needs.toLowerCase().includes(o.keyword.toLowerCase())) {
-                results += `<p>${f.name} matches with ${o.title}</p>`;
+                results += `<p>${f.name} matches ${o.title}</p>`;
             }
         });
     });
-
     document.getElementById("matchResults").innerHTML = results;
+}
+
+function runQuery() {
+    let families = JSON.parse(localStorage.getItem("families")) || [];
+    let keyword = queryInput.value.toLowerCase();
+    let results = "";
+    families.forEach(f => {
+        if (f.needs.toLowerCase().includes(keyword)) {
+            results += `<p>${f.name} - ${f.email}</p>`;
+        }
+    });
+    document.getElementById("queryResults").innerHTML = results;
+}
+
+function generateContactList() {
+    let families = JSON.parse(localStorage.getItem("families")) || [];
+    let list = families.map(f => `${f.name} - ${f.email} - ${f.phone}`).join("<br>");
+    document.getElementById("queryResults").innerHTML = "<strong>Contact List:</strong><br>" + list;
 }
