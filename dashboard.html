@@ -1,90 +1,83 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title>Employee Dashboard - Whispering Hills</title>
-    <link rel="stylesheet" href="css/style.css">
+<meta charset="UTF-8">
+<title>Employee Dashboard</title>
+<link rel="stylesheet" href="css/style.css">
 </head>
-
 <body>
 
 <div class="dashboard-layout">
 
-    <!-- Sidebar -->
-    <aside class="sidebar">
-        <h2>Whispering Hills</h2>
-        <p style="margin-top: 10px; font-size: 14px;">Employee Portal</p>
-        <button onclick="logout()" class="btn-secondary" style="margin-top:20px;">Logout</button>
-    </aside>
+<aside class="sidebar">
+    <h2>Whispering Hills</h2>
+    <button onclick="logout()" class="btn-secondary">Logout</button>
+</aside>
 
-    <!-- Main Content -->
-    <main class="dashboard-main">
+<main class="dashboard-main">
 
-        <h1 style="margin-bottom:30px;">Employee Dashboard</h1>
+<h1>Employee Dashboard</h1>
 
-        <!-- Families Card -->
-        <div class="card">
-            <h2>Registered Families</h2>
+<div class="card">
+<h2>Families</h2>
+<table id="familyTable">
+<thead>
+<tr>
+<th>Name</th>
+<th>Email</th>
+<th>Phone</th>
+<th>Needs</th>
+<th>Actions</th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
+</div>
 
-            <table id="familyTable">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Phone</th>
-                        <th>Needs</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-        </div>
+<div class="card">
+<h2>Volunteers</h2>
+<table id="volunteerTable">
+<thead>
+<tr>
+<th>Name</th>
+<th>Email</th>
+<th>Skills</th>
+<th>Availability</th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
+</div>
 
-        <!-- Volunteers Card -->
-        <div class="card">
-            <h2>Registered Volunteers</h2>
+<div class="card">
+<h2>Add Opportunity</h2>
+<input type="text" id="oppTitle" placeholder="Opportunity Title">
+<input type="text" id="oppKeyword" placeholder="Matching Keyword">
+<button onclick="addOpportunity()" class="btn-primary">Add</button>
+</div>
 
-            <table id="volunteerTable">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Skills</th>
-                        <th>Availability</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-        </div>
+<div class="card">
+<h2>Match Families</h2>
+<button onclick="matchFamilies()" class="btn-primary">Run Matching</button>
+<div id="matchResults"></div>
+</div>
 
-        <!-- Add Opportunity Card -->
-        <div class="card">
-            <h2>Add Opportunity</h2>
+<div class="card">
+<h2>Query Tool</h2>
+<input type="text" id="queryInput" placeholder="Search families by keyword">
+<button onclick="runQuery()" class="btn-primary">Search</button>
+<button onclick="generateContactList()" class="btn-secondary">Generate Contact List</button>
+<div id="queryResults"></div>
+</div>
 
-            <input type="text" id="oppTitle" placeholder="Opportunity Title">
-            <input type="text" id="oppKeyword" placeholder="Matching Keyword (e.g., tutoring)">
+<div class="card">
+<h2>Pending Submissions</h2>
+<div id="pendingSubmissions"></div>
+</div>
 
-            <button onclick="addOpportunity()" class="btn-primary">
-                Add Opportunity
-            </button>
-        </div>
-
-        <!-- Matching Card -->
-        <div class="card">
-            <h2>Match Families to Opportunities</h2>
-
-            <button onclick="matchFamilies()" class="btn-primary">
-                Run Matching
-            </button>
-
-            <div id="matchResults" style="margin-top:15px;"></div>
-        </div>
-
-    </main>
-
+</main>
 </div>
 
 <script src="js/script.js"></script>
-
 </body>
 </html>
