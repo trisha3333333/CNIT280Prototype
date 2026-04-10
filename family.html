@@ -11,15 +11,33 @@
 
 <h2>Family Registration</h2>
 <form id="familyForm">
-<input type="text" id="familyName" placeholder="Name" required>
-<input type="email" id="familyEmail" placeholder="Email" required>
-<input type="text" id="familyPhone" placeholder="Phone" required>
-<input type="text" id="familyNeeds" placeholder="Needs/Interests" required>
-<button type="submit" class="btn-primary">Submit</button>
+    <input type="text" id="familyName" placeholder="Name" required>
+    <input type="email" id="familyEmail" placeholder="Email" required>
+    <input type="text" id="familyPhone" placeholder="Phone" required>
+    <input type="text" id="familyNeeds" placeholder="Needs/Interests" required>
+
+    <label style="display:block; margin-bottom:15px;">
+        <input type="checkbox" id="familySubscribed">
+        Subscribe to weekly newsletter
+    </label>
+
+    <button type="submit" class="btn-primary">Submit</button>
 </form>
 
-<h2>Matched Opportunities</h2>
-<div id="familyMatches"></div>
+<div class="card" style="margin:30px;">
+    <h2>Available Opportunities</h2>
+    <div id="allOpportunities"></div>
+</div>
+
+<div class="card" style="margin:30px;">
+    <h2>Matched Opportunities</h2>
+    <div id="familyMatches"></div>
+</div>
+
+<div class="card" style="margin:30px;">
+    <h2>Weekly Newsletter</h2>
+    <div id="newsletterSection"></div>
+</div>
 
 <script src="js/script.js"></script>
 </body>
