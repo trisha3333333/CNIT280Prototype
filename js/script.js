@@ -1,8 +1,15 @@
-// LOGIN
+function getData(key) {
+    return JSON.parse(localStorage.getItem(key)) || [];
+}
+
+function setData(key, value) {
+    localStorage.setItem(key, JSON.stringify(value));
+}
+
 function login() {
-    const role = roleSelect.value;
-    const user = username.value;
-    const pass = password.value;
+    const role = document.getElementById("roleSelect").value;
+    const user = document.getElementById("username").value;
+    const pass = document.getElementById("password").value;
 
     if (role === "employee" && user === "admin" && pass === "admin123") {
         localStorage.setItem("role", "employee");
@@ -22,25 +29,29 @@ function login() {
 }
 
 function logout() {
-    localStorage.clear();
+    localStorage.removeItem("role");
     window.location.href = "index.html";
 }
 
 document.addEventListener("DOMContentLoaded", function () {
+    seedDefaultSiteContent();
     loadDashboard();
     loadPendingForms();
     loadFamilyOpportunities();
     loadFamilyMatches();
     loadNewsletters();
+    loadUrgentAlerts();
+    loadPublicWebsite();
 
-    const familyFormElement = document.getElementById("familyForm");
-    const volunteerFormElement = document.getElementById("volunteerForm");
+    const familyForm = document.getElementById("familyForm");
+    const volunteerForm = document.getElementById("volunteerForm");
 
-    if (familyFormElement) {
-        familyFormElement.addEventListener("submit", function (e) {
+    if (familyForm) {
+        familyForm.addEventListener("submit", function (e) {
             e.preventDefault();
 
-            let family = {
+            const family = {
+                id: Date.now(),
                 name: document.getElementById("familyName").value,
                 email: document.getElementById("familyEmail").value,
                 phone: document.getElementById("familyPhone").value,
@@ -48,41 +59,70 @@ document.addEventListener("DOMContentLoaded", function () {
                 subscribed: document.getElementById("familySubscribed").checked
             };
 
-            let pending = JSON.parse(localStorage.getItem("pendingForms")) || [];
+            const pending = getData("pendingForms");
             pending.push(family);
-            localStorage.setItem("pendingForms", JSON.stringify(pending));
+            setData("pendingForms", pending);
 
-            familyFormElement.reset();
+            localStorage.setItem("activeFamilyEmail", family.email);
+            familyForm.reset();
             alert("Submitted for approval");
+            loadFamilyMatches();
+            loadNewsletters();
+            loadUrgentAlerts();
         });
     }
 
-    if (volunteerFormElement) {
-        volunteerFormElement.addEventListener("submit", function (e) {
+    if (volunteerForm) {
+        volunteerForm.addEventListener("submit", function (e) {
             e.preventDefault();
 
-            let volunteer = {
+            const volunteer = {
+                id: Date.now(),
                 name: document.getElementById("volName").value,
                 email: document.getElementById("volEmail").value,
                 skills: document.getElementById("volSkills").value,
                 availability: document.getElementById("volAvailability").value
             };
 
-            let volunteers = JSON.parse(localStorage.getItem("volunteers")) || [];
+            const volunteers = getData("volunteers");
             volunteers.push(volunteer);
-            localStorage.setItem("volunteers", JSON.stringify(volunteers));
+            setData("volunteers", volunteers);
 
-            volunteerFormElement.reset();
+            volunteerForm.reset();
             alert("Volunteer Registered");
+            loadDashboard();
         });
     }
 });
 
+/* ---------- DEFAULT SITE CONTENT ---------- */
+function seedDefaultSiteContent() {
+    if (!localStorage.getItem("siteAbout")) {
+        localStorage.setItem("siteAbout", "Whispering Hills supports families by sharing services, programs, events, and community opportunities.");
+    }
+
+    if (!localStorage.getItem("siteServices")) {
+        setData("siteServices", [
+            "Family support resources",
+            "Volunteer opportunities",
+            "Social activities",
+            "Job and community programs"
+        ]);
+    }
+}
+
+/* ---------- EMPLOYEE DASHBOARD ---------- */
 function loadDashboard() {
-    let familyTable = document.querySelector("#familyTable tbody");
+    loadFamiliesTable();
+    loadVolunteerTable();
+    loadOpportunityList();
+}
+
+function loadFamiliesTable() {
+    const familyTable = document.querySelector("#familyTable tbody");
     if (!familyTable) return;
 
-    let families = JSON.parse(localStorage.getItem("families")) || [];
+    const families = getData("families");
     familyTable.innerHTML = "";
 
     families.forEach((f, i) => {
@@ -93,238 +133,375 @@ function loadDashboard() {
             <td>${f.phone}</td>
             <td>${f.needs}</td>
             <td>${f.subscribed ? "Yes" : "No"}</td>
-            <td><button onclick="deleteFamily(${i})" class="btn-secondary">Delete</button></td>
+            <td>
+                <button class="btn-secondary" onclick="editFamily(${i})">Edit</button>
+                <button class="btn-secondary" onclick="deleteFamily(${i})">Delete</button>
+            </td>
         </tr>`;
     });
+}
 
-    let volunteerTable = document.querySelector("#volunteerTable tbody");
+function loadVolunteerTable() {
+    const volunteerTable = document.querySelector("#volunteerTable tbody");
     if (!volunteerTable) return;
 
-    let volunteers = JSON.parse(localStorage.getItem("volunteers")) || [];
+    const volunteers = getData("volunteers");
     volunteerTable.innerHTML = "";
 
-    volunteers.forEach((v) => {
+    volunteers.forEach((v, i) => {
         volunteerTable.innerHTML += `
         <tr>
             <td>${v.name}</td>
             <td>${v.email}</td>
             <td>${v.skills}</td>
             <td>${v.availability}</td>
+            <td>
+                <button class="btn-secondary" onclick="editVolunteer(${i})">Edit</button>
+                <button class="btn-secondary" onclick="deleteVolunteer(${i})">Delete</button>
+            </td>
         </tr>`;
     });
 }
 
-function approveSubmission(i) {
-    let pending = JSON.parse(localStorage.getItem("pendingForms")) || [];
-    let families = JSON.parse(localStorage.getItem("families")) || [];
-
-    families.push(pending[i]);
-    pending.splice(i, 1);
-
-    localStorage.setItem("families", JSON.stringify(families));
-    localStorage.setItem("pendingForms", JSON.stringify(pending));
-
-    loadDashboard();
-    loadPendingForms();
-}
-
-function loadPendingForms() {
-    let container = document.getElementById("pendingSubmissions");
+function loadOpportunityList() {
+    const container = document.getElementById("opportunityList");
     if (!container) return;
 
-    let pending = JSON.parse(localStorage.getItem("pendingForms")) || [];
+    const opportunities = getData("opportunities");
     container.innerHTML = "";
 
-    pending.forEach((p, i) => {
+    if (opportunities.length === 0) {
+        container.innerHTML = "<p>No opportunities added yet.</p>";
+        return;
+    }
+
+    opportunities.forEach((o, i) => {
         container.innerHTML += `
-        <div style="margin-bottom:10px;">
-            ${p.name} - ${p.email}
-            <button onclick="approveSubmission(${i})" class="btn-primary">Approve</button>
+        <div class="item-box">
+            <strong>${o.title}</strong><br>
+            Type: ${o.type}<br>
+            Keyword: ${o.keyword}<br>
+            ${o.description}<br><br>
+            <button class="btn-secondary" onclick="editOpportunity(${i})">Edit</button>
+            <button class="btn-secondary" onclick="deleteOpportunity(${i})">Delete</button>
         </div>`;
     });
-}
-
-function deleteFamily(i) {
-    let families = JSON.parse(localStorage.getItem("families")) || [];
-    families.splice(i, 1);
-    localStorage.setItem("families", JSON.stringify(families));
-    loadDashboard();
 }
 
 function addOpportunity() {
-    let titleInput = document.getElementById("oppTitle");
-    let keywordInput = document.getElementById("oppKeyword");
+    const title = document.getElementById("oppTitle").value.trim();
+    const type = document.getElementById("oppType").value.trim();
+    const keyword = document.getElementById("oppKeyword").value.trim();
+    const description = document.getElementById("oppDescription").value.trim();
 
-    let title = titleInput.value.trim();
-    let keyword = keywordInput.value.trim();
-
-    if (title === "" || keyword === "") {
-        alert("Please enter both title and keyword.");
+    if (!title || !type || !keyword || !description) {
+        alert("Please fill in all opportunity fields.");
         return;
     }
 
-    let opportunities = JSON.parse(localStorage.getItem("opportunities")) || [];
-    opportunities.push({ title: title, keyword: keyword });
-    localStorage.setItem("opportunities", JSON.stringify(opportunities));
-
-    titleInput.value = "";
-    keywordInput.value = "";
-
-    alert("Opportunity Added");
-}
-
-function matchFamilies() {
-    let families = JSON.parse(localStorage.getItem("families")) || [];
-    let opportunities = JSON.parse(localStorage.getItem("opportunities")) || [];
-    let results = "";
-
-    families.forEach(f => {
-        let familyMatched = false;
-
-        opportunities.forEach(o => {
-            if (f.needs.toLowerCase().includes(o.keyword.toLowerCase())) {
-                results += `<p>${f.name} matches ${o.title}</p>`;
-                familyMatched = true;
-            }
-        });
-
-        if (!familyMatched) {
-            results += `<p>${f.name} has no current matches.</p>`;
-        }
+    const opportunities = getData("opportunities");
+    opportunities.push({
+        id: Date.now(),
+        title,
+        type,
+        keyword,
+        description
     });
+    setData("opportunities", opportunities);
 
-    document.getElementById("matchResults").innerHTML = results;
+    document.getElementById("oppTitle").value = "";
+    document.getElementById("oppType").value = "";
+    document.getElementById("oppKeyword").value = "";
+    document.getElementById("oppDescription").value = "";
+
+    loadOpportunityList();
+    loadFamilyOpportunities();
+    loadFamilyMatches();
+    loadPublicWebsite();
+    alert("Opportunity added.");
 }
 
-function runQuery() {
-    let families = JSON.parse(localStorage.getItem("families")) || [];
-    let keyword = document.getElementById("queryInput").value.toLowerCase();
-    let results = "";
+function editFamily(index) {
+    const families = getData("families");
+    const family = families[index];
 
-    families.forEach(f => {
-        if (f.needs.toLowerCase().includes(keyword)) {
-            results += `<p>${f.name} - ${f.email}</p>`;
-        }
-    });
+    const newName = prompt("Edit family name:", family.name);
+    if (newName === null) return;
 
-    document.getElementById("queryResults").innerHTML = results || "<p>No results found.</p>";
+    const newEmail = prompt("Edit family email:", family.email);
+    if (newEmail === null) return;
+
+    const newPhone = prompt("Edit family phone:", family.phone);
+    if (newPhone === null) return;
+
+    const newNeeds = prompt("Edit family needs/interests:", family.needs);
+    if (newNeeds === null) return;
+
+    family.name = newName.trim();
+    family.email = newEmail.trim();
+    family.phone = newPhone.trim();
+    family.needs = newNeeds.trim();
+
+    families[index] = family;
+    setData("families", families);
+    loadFamiliesTable();
+    loadFamilyMatches();
 }
 
-function generateContactList() {
-    let families = JSON.parse(localStorage.getItem("families")) || [];
-    let list = families.map(f => `${f.name} - ${f.email} - ${f.phone}`).join("<br>");
-    document.getElementById("queryResults").innerHTML =
-        "<strong>Contact List:</strong><br>" + (list || "No family records available.");
+function deleteFamily(index) {
+    const families = getData("families");
+    families.splice(index, 1);
+    setData("families", families);
+    loadFamiliesTable();
+    loadFamilyMatches();
 }
 
-/* USER STORY 202 - FAMILY CAN VIEW OPPORTUNITIES */
-function loadFamilyOpportunities() {
-    let container = document.getElementById("allOpportunities");
+function editVolunteer(index) {
+    const volunteers = getData("volunteers");
+    const volunteer = volunteers[index];
+
+    const newName = prompt("Edit volunteer name:", volunteer.name);
+    if (newName === null) return;
+
+    const newEmail = prompt("Edit volunteer email:", volunteer.email);
+    if (newEmail === null) return;
+
+    const newSkills = prompt("Edit volunteer skills:", volunteer.skills);
+    if (newSkills === null) return;
+
+    const newAvailability = prompt("Edit volunteer availability:", volunteer.availability);
+    if (newAvailability === null) return;
+
+    volunteer.name = newName.trim();
+    volunteer.email = newEmail.trim();
+    volunteer.skills = newSkills.trim();
+    volunteer.availability = newAvailability.trim();
+
+    volunteers[index] = volunteer;
+    setData("volunteers", volunteers);
+    loadVolunteerTable();
+}
+
+function deleteVolunteer(index) {
+    const volunteers = getData("volunteers");
+    volunteers.splice(index, 1);
+    setData("volunteers", volunteers);
+    loadVolunteerTable();
+}
+
+function editOpportunity(index) {
+    const opportunities = getData("opportunities");
+    const opp = opportunities[index];
+
+    const newTitle = prompt("Edit opportunity title:", opp.title);
+    if (newTitle === null) return;
+
+    const newType = prompt("Edit opportunity type:", opp.type);
+    if (newType === null) return;
+
+    const newKeyword = prompt("Edit keyword:", opp.keyword);
+    if (newKeyword === null) return;
+
+    const newDescription = prompt("Edit description:", opp.description);
+    if (newDescription === null) return;
+
+    opp.title = newTitle.trim();
+    opp.type = newType.trim();
+    opp.keyword = newKeyword.trim();
+    opp.description = newDescription.trim();
+
+    opportunities[index] = opp;
+    setData("opportunities", opportunities);
+
+    loadOpportunityList();
+    loadFamilyOpportunities();
+    loadFamilyMatches();
+    loadPublicWebsite();
+}
+
+function deleteOpportunity(index) {
+    const opportunities = getData("opportunities");
+    opportunities.splice(index, 1);
+    setData("opportunities", opportunities);
+
+    loadOpportunityList();
+    loadFamilyOpportunities();
+    loadFamilyMatches();
+    loadPublicWebsite();
+}
+
+/* ---------- PENDING APPROVALS ---------- */
+function loadPendingForms() {
+    const container = document.getElementById("pendingSubmissions");
     if (!container) return;
 
-    let opportunities = JSON.parse(localStorage.getItem("opportunities")) || [];
+    const pending = getData("pendingForms");
+    container.innerHTML = "";
 
-    if (opportunities.length === 0) {
-        container.innerHTML = "<p>No opportunities available yet.</p>";
+    if (pending.length === 0) {
+        container.innerHTML = "<p>No pending submissions.</p>";
         return;
     }
 
-    let html = "";
-    opportunities.forEach(o => {
-        html += `
-        <div class="card" style="margin-bottom:15px;">
-            <h3>${o.title}</h3>
-            <p>Keyword: ${o.keyword}</p>
+    pending.forEach((p, i) => {
+        container.innerHTML += `
+        <div class="item-box">
+            <strong>${p.name}</strong><br>
+            ${p.email}<br>
+            ${p.phone}<br>
+            Needs: ${p.needs}<br>
+            Newsletter: ${p.subscribed ? "Yes" : "No"}<br><br>
+            <button class="btn-primary" onclick="approveSubmission(${i})">Approve</button>
+            <button class="btn-secondary" onclick="rejectSubmission(${i})">Reject</button>
         </div>`;
     });
-
-    container.innerHTML = html;
 }
 
-function loadFamilyMatches() {
-    let container = document.getElementById("familyMatches");
-    if (!container) return;
+function approveSubmission(index) {
+    const pending = getData("pendingForms");
+    const families = getData("families");
 
-    let pending = JSON.parse(localStorage.getItem("pendingForms")) || [];
-    let families = JSON.parse(localStorage.getItem("families")) || [];
-    let opportunities = JSON.parse(localStorage.getItem("opportunities")) || [];
+    families.push(pending[index]);
+    setData("families", families);
 
-    let allFamilies = [...families, ...pending];
+    pending.splice(index, 1);
+    setData("pendingForms", pending);
 
-    if (allFamilies.length === 0) {
-        container.innerHTML = "<p>No family information submitted yet.</p>";
-        return;
-    }
+    loadPendingForms();
+    loadFamiliesTable();
+}
 
-    let latestFamily = allFamilies[allFamilies.length - 1];
-    let matches = opportunities.filter(o =>
-        latestFamily.needs.toLowerCase().includes(o.keyword.toLowerCase())
+function rejectSubmission(index) {
+    const pending = getData("pendingForms");
+    pending.splice(index, 1);
+    setData("pendingForms", pending);
+    loadPendingForms();
+}
+
+/* ---------- MATCHING ---------- */
+function matchFamilies() {
+    const families = getData("families");
+    const opportunities = getData("opportunities");
+    const resultsBox = document.getElementById("matchResults");
+    if (!resultsBox) return;
+
+    let results = "";
+
+    families.forEach(family => {
+        const matches = opportunities.filter(opp =>
+            family.needs.toLowerCase().includes(opp.keyword.toLowerCase())
+        );
+
+        if (matches.length > 0) {
+            results += `<div class="item-box"><strong>${family.name}</strong><br>`;
+            matches.forEach(m => {
+                results += `${m.title} (${m.type})<br>`;
+            });
+            results += `</div>`;
+        } else {
+            results += `<div class="item-box"><strong>${family.name}</strong><br>No matches found.</div>`;
+        }
+    });
+
+    resultsBox.innerHTML = results || "<p>No family records available.</p>";
+}
+
+/* ---------- QUERY TOOL ---------- */
+function runQuery() {
+    const keyword = document.getElementById("queryInput").value.trim().toLowerCase();
+    const families = getData("families");
+    const resultsBox = document.getElementById("queryResults");
+    if (!resultsBox) return;
+
+    const matches = families.filter(f =>
+        f.needs.toLowerCase().includes(keyword) ||
+        f.name.toLowerCase().includes(keyword)
     );
 
     if (matches.length === 0) {
-        container.innerHTML = "<p>No matched opportunities yet.</p>";
+        resultsBox.innerHTML = "<p>No matching families found.</p>";
         return;
     }
 
     let html = "";
-    matches.forEach(m => {
+    matches.forEach(f => {
         html += `
-        <div class="card" style="margin-bottom:15px;">
-            <h3>${m.title}</h3>
-            <p>Matched to your interests/needs.</p>
+        <div class="item-box">
+            <strong>${f.name}</strong><br>
+            Email: ${f.email}<br>
+            Phone: ${f.phone}<br>
+            Needs: ${f.needs}
         </div>`;
     });
 
-    container.innerHTML = html;
+    resultsBox.innerHTML = html;
 }
 
-/* USER STORIES 701 and 702 - NEWSLETTER */
-function sendNewsletter() {
-    let title = document.getElementById("newsletterTitle").value.trim();
-    let message = document.getElementById("newsletterMessage").value.trim();
-    let statusBox = document.getElementById("newsletterStatus");
+function generateContactList() {
+    const families = getData("families");
+    const resultsBox = document.getElementById("queryResults");
+    if (!resultsBox) return;
 
-    if (title === "" || message === "") {
-        alert("Please enter a newsletter title and message.");
+    if (families.length === 0) {
+        resultsBox.innerHTML = "<p>No families available.</p>";
         return;
     }
 
-    let newsletters = JSON.parse(localStorage.getItem("newsletters")) || [];
+    let html = "<div class='item-box'><strong>Contact List</strong><br><br>";
+    families.forEach(f => {
+        html += `${f.name} - ${f.email} - ${f.phone}<br>`;
+    });
+    html += "</div>";
+
+    resultsBox.innerHTML = html;
+}
+
+/* ---------- NEWSLETTER ---------- */
+function sendNewsletter() {
+    const title = document.getElementById("newsletterTitle").value.trim();
+    const message = document.getElementById("newsletterMessage").value.trim();
+    const status = document.getElementById("newsletterStatus");
+
+    if (!title || !message) {
+        alert("Please enter newsletter title and message.");
+        return;
+    }
+
+    const newsletters = getData("newsletters");
     newsletters.unshift({
-        title: title,
-        message: message,
+        id: Date.now(),
+        title,
+        message,
         date: new Date().toLocaleDateString()
     });
-
-    localStorage.setItem("newsletters", JSON.stringify(newsletters));
+    setData("newsletters", newsletters);
 
     document.getElementById("newsletterTitle").value = "";
     document.getElementById("newsletterMessage").value = "";
 
-    let families = JSON.parse(localStorage.getItem("families")) || [];
-    let subscribedFamilies = families.filter(f => f.subscribed);
-
-    statusBox.innerHTML = `<p>Newsletter sent to ${subscribedFamilies.length} subscribed family(s).</p>`;
+    const subscribedFamilies = getData("families").filter(f => f.subscribed);
+    status.innerHTML = `<p>Newsletter sent to ${subscribedFamilies.length} subscribed family(s).</p>`;
+    loadNewsletters();
 }
 
 function loadNewsletters() {
-    let container = document.getElementById("newsletterSection");
+    const container = document.getElementById("newsletterSection");
     if (!container) return;
 
-    let newsletters = JSON.parse(localStorage.getItem("newsletters")) || [];
-    let pending = JSON.parse(localStorage.getItem("pendingForms")) || [];
-    let families = JSON.parse(localStorage.getItem("families")) || [];
-    let allFamilies = [...families, ...pending];
+    const newsletters = getData("newsletters");
+    const activeEmail = localStorage.getItem("activeFamilyEmail");
+    const families = getData("families");
+    const pending = getData("pendingForms");
 
-    if (allFamilies.length === 0) {
-        container.innerHTML = "<p>Submit family information first to view newsletters.</p>";
+    const currentFamily = families.find(f => f.email === activeEmail) || pending.find(f => f.email === activeEmail);
+
+    if (!currentFamily) {
+        container.innerHTML = "<p>Submit family information to view newsletters.</p>";
         return;
     }
 
-    let latestFamily = allFamilies[allFamilies.length - 1];
-
-    if (!latestFamily.subscribed) {
-        container.innerHTML = "<p>You are not subscribed to the newsletter.</p>";
+    if (!currentFamily.subscribed) {
+        container.innerHTML = "<p>You are not subscribed to weekly newsletters.</p>";
         return;
     }
 
@@ -336,12 +513,186 @@ function loadNewsletters() {
     let html = "";
     newsletters.forEach(n => {
         html += `
-        <div class="card" style="margin-bottom:15px;">
-            <h3>${n.title}</h3>
-            <p>${n.message}</p>
-            <small>Sent on: ${n.date}</small>
+        <div class="item-box">
+            <strong>${n.title}</strong><br>
+            ${n.message}<br><br>
+            <small>Sent on ${n.date}</small>
         </div>`;
     });
 
     container.innerHTML = html;
+}
+
+/* ---------- URGENT ALERTS ---------- */
+function sendUrgentAlert() {
+    const title = document.getElementById("alertTitle").value.trim();
+    const message = document.getElementById("alertMessage").value.trim();
+    const status = document.getElementById("alertStatus");
+
+    if (!title || !message) {
+        alert("Please enter alert title and message.");
+        return;
+    }
+
+    const alerts = getData("alerts");
+    alerts.unshift({
+        id: Date.now(),
+        title,
+        message,
+        date: new Date().toLocaleString()
+    });
+    setData("alerts", alerts);
+
+    document.getElementById("alertTitle").value = "";
+    document.getElementById("alertMessage").value = "";
+
+    const familyCount = getData("families").length;
+    status.innerHTML = `<p>Urgent alert sent to ${familyCount} family record(s).</p>`;
+    loadUrgentAlerts();
+}
+
+function loadUrgentAlerts() {
+    const container = document.getElementById("alertSection");
+    if (!container) return;
+
+    const alerts = getData("alerts");
+
+    if (alerts.length === 0) {
+        container.innerHTML = "<p>No urgent alerts right now.</p>";
+        return;
+    }
+
+    let html = "";
+    alerts.forEach(a => {
+        html += `
+        <div class="item-box">
+            <strong>${a.title}</strong><br>
+            ${a.message}<br><br>
+            <small>${a.date}</small>
+        </div>`;
+    });
+
+    container.innerHTML = html;
+}
+
+/* ---------- FAMILY OPPORTUNITIES ---------- */
+function loadFamilyOpportunities() {
+    const container = document.getElementById("allOpportunities");
+    if (!container) return;
+
+    const opportunities = getData("opportunities");
+
+    if (opportunities.length === 0) {
+        container.innerHTML = "<p>No opportunities available yet.</p>";
+        return;
+    }
+
+    let html = "";
+    opportunities.forEach(o => {
+        html += `
+        <div class="item-box">
+            <strong>${o.title}</strong><br>
+            Type: ${o.type}<br>
+            ${o.description}
+        </div>`;
+    });
+
+    container.innerHTML = html;
+}
+
+function loadFamilyMatches() {
+    const container = document.getElementById("familyMatches");
+    if (!container) return;
+
+    const activeEmail = localStorage.getItem("activeFamilyEmail");
+    const families = getData("families");
+    const pending = getData("pendingForms");
+    const opportunities = getData("opportunities");
+
+    const currentFamily = families.find(f => f.email === activeEmail) || pending.find(f => f.email === activeEmail);
+
+    if (!currentFamily) {
+        container.innerHTML = "<p>Submit your information to see matches.</p>";
+        return;
+    }
+
+    const matches = opportunities.filter(o =>
+        currentFamily.needs.toLowerCase().includes(o.keyword.toLowerCase())
+    );
+
+    if (matches.length === 0) {
+        container.innerHTML = "<p>No matched opportunities yet.</p>";
+        return;
+    }
+
+    let html = "";
+    matches.forEach(m => {
+        html += `
+        <div class="item-box">
+            <strong>${m.title}</strong><br>
+            Type: ${m.type}<br>
+            ${m.description}
+        </div>`;
+    });
+
+    container.innerHTML = html;
+}
+
+/* ---------- PUBLIC WEBSITE ---------- */
+function updateWebsiteContent() {
+    const about = document.getElementById("siteAbout").value.trim();
+    const servicesText = document.getElementById("siteServices").value.trim();
+    const status = document.getElementById("siteStatus");
+
+    if (!about || !servicesText) {
+        alert("Please fill in both website fields.");
+        return;
+    }
+
+    const services = servicesText.split(",").map(item => item.trim()).filter(item => item !== "");
+
+    localStorage.setItem("siteAbout", about);
+    setData("siteServices", services);
+
+    document.getElementById("siteAbout").value = "";
+    document.getElementById("siteServices").value = "";
+
+    status.innerHTML = "<p>Website content updated.</p>";
+    loadPublicWebsite();
+}
+
+function loadPublicWebsite() {
+    const aboutText = document.getElementById("publicAboutText");
+    const servicesBox = document.getElementById("publicServices");
+    const opportunitiesBox = document.getElementById("publicOpportunities");
+
+    const siteAbout = localStorage.getItem("siteAbout");
+    const services = getData("siteServices");
+    const opportunities = getData("opportunities");
+
+    if (aboutText) {
+        aboutText.textContent = siteAbout || "";
+    }
+
+    if (servicesBox) {
+        if (services.length === 0) {
+            servicesBox.innerHTML = "<p>No services listed yet.</p>";
+        } else {
+            servicesBox.innerHTML = services.map(s => `<div class="item-box">${s}</div>`).join("");
+        }
+    }
+
+    if (opportunitiesBox) {
+        if (opportunities.length === 0) {
+            opportunitiesBox.innerHTML = "<p>No public opportunities posted yet.</p>";
+        } else {
+            opportunitiesBox.innerHTML = opportunities.map(o => `
+                <div class="item-box">
+                    <strong>${o.title}</strong><br>
+                    Type: ${o.type}<br>
+                    ${o.description}
+                </div>
+            `).join("");
+        }
+    }
 }
