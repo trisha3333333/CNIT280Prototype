@@ -11,6 +11,7 @@
 
 <aside class="sidebar">
     <h2>Whispering Hills</h2>
+    <p>Employee Portal</p>
     <button onclick="logout()" class="btn-secondary">Logout</button>
 </aside>
 
@@ -27,7 +28,7 @@
                 <th>Email</th>
                 <th>Phone</th>
                 <th>Needs</th>
-                <th>Newsletter</th>
+                <th>Subscribed</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -44,6 +45,7 @@
                 <th>Email</th>
                 <th>Skills</th>
                 <th>Availability</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody></tbody>
@@ -51,37 +53,57 @@
 </div>
 
 <div class="card">
-    <h2>Add Opportunity</h2>
+    <h2>Opportunities</h2>
     <input type="text" id="oppTitle" placeholder="Opportunity Title">
+    <input type="text" id="oppType" placeholder="Type (job, social, volunteer)">
     <input type="text" id="oppKeyword" placeholder="Matching Keyword">
-    <button onclick="addOpportunity()" class="btn-primary">Add</button>
+    <textarea id="oppDescription" placeholder="Opportunity Description"></textarea>
+    <button onclick="addOpportunity()" class="btn-primary">Add Opportunity</button>
+
+    <div id="opportunityList" class="stack-space"></div>
 </div>
 
 <div class="card">
-    <h2>Match Families</h2>
+    <h2>Match Families to Opportunities</h2>
     <button onclick="matchFamilies()" class="btn-primary">Run Matching</button>
     <div id="matchResults"></div>
 </div>
 
 <div class="card">
     <h2>Query Tool</h2>
-    <input type="text" id="queryInput" placeholder="Search families by keyword">
+    <input type="text" id="queryInput" placeholder="Search families by need or interest">
     <button onclick="runQuery()" class="btn-primary">Search</button>
     <button onclick="generateContactList()" class="btn-secondary">Generate Contact List</button>
     <div id="queryResults"></div>
 </div>
 
 <div class="card">
-    <h2>Pending Submissions</h2>
+    <h2>Pending Family Submissions</h2>
     <div id="pendingSubmissions"></div>
 </div>
 
 <div class="card">
-    <h2>Send Weekly Newsletter</h2>
+    <h2>Weekly Newsletter</h2>
     <input type="text" id="newsletterTitle" placeholder="Newsletter Title">
-    <textarea id="newsletterMessage" placeholder="Write newsletter message here" style="width:100%; height:120px; padding:10px; border-radius:6px; border:1px solid #ddd; margin-bottom:15px;"></textarea>
+    <textarea id="newsletterMessage" placeholder="Write newsletter message"></textarea>
     <button onclick="sendNewsletter()" class="btn-primary">Send Newsletter</button>
-    <div id="newsletterStatus" style="margin-top:15px;"></div>
+    <div id="newsletterStatus"></div>
+</div>
+
+<div class="card">
+    <h2>Urgent Opportunity Alert</h2>
+    <input type="text" id="alertTitle" placeholder="Urgent Alert Title">
+    <textarea id="alertMessage" placeholder="Write urgent message"></textarea>
+    <button onclick="sendUrgentAlert()" class="btn-primary">Send Urgent Alert</button>
+    <div id="alertStatus"></div>
+</div>
+
+<div class="card">
+    <h2>Update Public Website</h2>
+    <input type="text" id="siteAbout" placeholder="Update About Section">
+    <textarea id="siteServices" placeholder="Enter services separated by commas"></textarea>
+    <button onclick="updateWebsiteContent()" class="btn-primary">Update Website</button>
+    <div id="siteStatus"></div>
 </div>
 
 </main>
