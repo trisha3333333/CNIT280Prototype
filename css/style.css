@@ -5,7 +5,6 @@ body {
     color: #1f2937;
 }
 
-/* Topbar */
 .topbar {
     display: flex;
     justify-content: space-between;
@@ -19,7 +18,6 @@ body {
     font-size: 18px;
 }
 
-/* Hero Section */
 .hero {
     text-align: center;
     padding: 100px 20px;
@@ -38,23 +36,19 @@ body {
     margin-bottom: 30px;
 }
 
-/* Features */
-.features {
-    display: flex;
-    justify-content: center;
-    gap: 30px;
-    padding: 60px;
+.public-section {
+    padding: 50px 40px;
+    max-width: 1000px;
+    margin: auto;
 }
 
-.feature-card {
+.footer {
+    text-align: center;
+    padding: 25px;
     background: white;
-    padding: 30px;
-    border-radius: 12px;
-    width: 280px;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.05);
+    margin-top: 40px;
 }
 
-/* Buttons */
 .btn-primary {
     background: #2563eb;
     color: white;
@@ -63,6 +57,7 @@ body {
     border: none;
     text-decoration: none;
     cursor: pointer;
+    display: inline-block;
 }
 
 .btn-primary.large {
@@ -77,7 +72,6 @@ body {
     cursor: pointer;
 }
 
-/* Login */
 .login-wrapper {
     display: flex;
     justify-content: center;
@@ -89,20 +83,28 @@ body {
     background: white;
     padding: 40px;
     border-radius: 12px;
-    width: 350px;
+    width: 360px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.08);
 }
 
 .login-card input,
-.login-card select {
+.login-card select,
+textarea,
+.card input,
+.card select {
     width: 100%;
     padding: 10px;
     margin-bottom: 15px;
     border-radius: 6px;
     border: 1px solid #ddd;
+    box-sizing: border-box;
 }
 
-/* Dashboard */
+textarea {
+    min-height: 110px;
+    resize: vertical;
+}
+
 .dashboard-layout {
     display: flex;
 }
@@ -120,12 +122,36 @@ body {
     padding: 40px;
 }
 
+.page-wrap {
+    padding: 30px;
+    max-width: 1100px;
+    margin: auto;
+}
+
 .card {
     background: white;
     padding: 25px;
     border-radius: 12px;
     margin-bottom: 30px;
     box-shadow: 0 6px 20px rgba(0,0,0,0.05);
+}
+
+.small-note {
+    font-size: 13px;
+    color: #6b7280;
+    margin-top: 10px;
+}
+
+.checkbox-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.checkbox-row input {
+    width: auto;
+    margin: 0;
 }
 
 table {
@@ -140,4 +166,18 @@ table th {
 table th, table td {
     padding: 10px;
     border-bottom: 1px solid #eee;
+    text-align: left;
+    vertical-align: top;
+}
+
+.item-box {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 12px;
+}
+
+.stack-space {
+    margin-top: 20px;
 }
