@@ -7,16 +7,20 @@
 </head>
 <body>
 
-<button onclick="logout()" class="btn-secondary">Logout</button>
+<div class="page-wrap">
+    <button onclick="logout()" class="btn-secondary">Logout</button>
 
-<h2>Volunteer Registration</h2>
-<form id="volunteerForm">
-<input type="text" id="volName" placeholder="Name" required>
-<input type="email" id="volEmail" placeholder="Email" required>
-<input type="text" id="volSkills" placeholder="Skills" required>
-<input type="text" id="volAvailability" placeholder="Availability" required>
-<button type="submit" class="btn-primary">Submit</button>
-</form>
+    <div class="card">
+        <h2>Volunteer Registration</h2>
+        <form id="volunteerForm">
+            <input type="text" id="volName" placeholder="Name" required>
+            <input type="email" id="volEmail" placeholder="Email" required>
+            <input type="text" id="volSkills" placeholder="Skills" required>
+            <input type="text" id="volAvailability" placeholder="Availability" required>
+            <button type="submit" class="btn-primary">Submit</button>
+        </form>
+    </div>
+</div>
 
 <script src="js/script.js"></script>
 </body>
