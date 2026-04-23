@@ -1,24 +1,61 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Volunteer Portal</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Volunteer Portal — Whispering Hills</title>
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-<div class="page-wrap">
-    <button onclick="logout()" class="btn-secondary">Logout</button>
+<div class="portal-hero" style="background-image:url('https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?w=1400&auto=format&fit=crop&q=80');">
+    <div class="portal-hero-content">
+        <h1>Volunteer Portal</h1>
+        <p>Join our team of dedicated community volunteers and make a lasting difference.</p>
+    </div>
+</div>
 
+<div class="page-wrap">
+    <div class="page-header">
+        <h1 style="font-size:22px;font-weight:500;color:var(--ink-light);">Welcome, Volunteer</h1>
+        <button onclick="logout()" class="btn-secondary">Logout</button>
+    </div>
+
+    <!-- VOLUNTEER REGISTRATION -->
     <div class="card">
-        <h2>Volunteer Registration</h2>
+        <h2>🤝 Volunteer Registration</h2>
+        <p style="color:var(--ink-light);font-size:14px;margin-bottom:20px;">Tell us about yourself so we can connect you with opportunities that match your skills and schedule.</p>
         <form id="volunteerForm">
-            <input type="text" id="volName" placeholder="Name" required>
-            <input type="email" id="volEmail" placeholder="Email" required>
-            <input type="text" id="volSkills" placeholder="Skills" required>
-            <input type="text" id="volAvailability" placeholder="Availability" required>
-            <button type="submit" class="btn-primary">Submit</button>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                <input type="text" id="volName" placeholder="Full Name" required>
+                <input type="email" id="volEmail" placeholder="Email Address" required>
+            </div>
+            <input type="text" id="volSkills" placeholder="Skills (e.g. cooking, tutoring, driving)" required>
+            <input type="text" id="volAvailability" placeholder="Availability (e.g. weekends, evenings)" required>
+            <button type="submit" class="btn-primary">Register as Volunteer</button>
         </form>
+    </div>
+
+    <!-- WHY VOLUNTEER -->
+    <div class="card">
+        <h2>💛 Why Volunteer with Us?</h2>
+        <div class="feature-grid" style="margin-top:8px;">
+            <div class="feature-card" style="padding:20px;">
+                <div class="feature-icon icon-green" style="width:40px;height:40px;font-size:18px;border-radius:10px;">🌱</div>
+                <h3 style="font-size:17px;margin-top:12px;">Make an Impact</h3>
+                <p style="font-size:14px;">Your time and skills directly improve the lives of families in your community.</p>
+            </div>
+            <div class="feature-card" style="padding:20px;">
+                <div class="feature-icon icon-gold" style="width:40px;height:40px;font-size:18px;border-radius:10px;">🤝</div>
+                <h3 style="font-size:17px;margin-top:12px;">Build Connections</h3>
+                <p style="font-size:14px;">Join a network of passionate people who care about the same things you do.</p>
+            </div>
+            <div class="feature-card" style="padding:20px;">
+                <div class="feature-icon icon-sky" style="width:40px;height:40px;font-size:18px;border-radius:10px;">📅</div>
+                <h3 style="font-size:17px;margin-top:12px;">Flexible Schedule</h3>
+                <p style="font-size:14px;">Volunteer on your own schedule — mornings, evenings, or weekends. Every bit helps.</p>
+            </div>
+        </div>
     </div>
 </div>
 
