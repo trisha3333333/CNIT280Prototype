@@ -1,34 +1,46 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Login</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login — Whispering Hills</title>
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
 <div class="login-wrapper">
-    <div class="login-card">
-        <h2>System Login</h2>
+    <div class="login-left">
+        <div class="login-left-overlay"></div>
+        <div class="login-left-text">
+            <h2>Welcome Back</h2>
+            <p>Connecting families, volunteers, and community resources in one secure place.</p>
+        </div>
+    </div>
 
-        <select id="roleSelect">
-            <option value="">Select Role</option>
-            <option value="employee">Employee</option>
-            <option value="family">Family</option>
-            <option value="volunteer">Volunteer</option>
-        </select>
+    <div class="login-right">
+        <div class="login-card">
+            <a href="index.html" style="text-decoration:none;color:var(--ink-light);font-size:14px;display:inline-block;margin-bottom:28px;">← Back to site</a>
+            <h2>Sign In</h2>
+            <p class="subtitle">Choose your role and enter your credentials below.</p>
 
-        <input type="text" id="username" placeholder="Username">
-        <input type="password" id="password" placeholder="Password">
+            <select id="roleSelect">
+                <option value="">Select your role…</option>
+                <option value="employee">👤 Employee</option>
+                <option value="family">🏡 Family</option>
+                <option value="volunteer">🤝 Volunteer</option>
+            </select>
 
-        <button onclick="login()" class="btn-primary">Login</button>
+            <input type="text" id="username" placeholder="Username">
+            <input type="password" id="password" placeholder="Password">
+            <button onclick="login()" class="btn-primary">Sign In</button>
 
-        <p class="small-note">
-            Demo logins:<br>
-            Employee: admin / admin123<br>
-            Family: family / family123<br>
-            Volunteer: volunteer / volunteer123
-        </p>
+            <div class="small-note">
+                <strong>Demo credentials:</strong><br>
+                Employee: <code>admin</code> / <code>admin123</code><br>
+                Family: <code>family</code> / <code>family123</code><br>
+                Volunteer: <code>volunteer</code> / <code>volunteer123</code>
+            </div>
+        </div>
     </div>
 </div>
 
