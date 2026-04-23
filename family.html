@@ -1,49 +1,68 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Family Portal</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Family Portal — Whispering Hills</title>
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
+<div class="portal-hero">
+    <div class="portal-hero-content">
+        <h1>Family Portal</h1>
+        <p>Register your family, explore opportunities, and stay connected with your community.</p>
+    </div>
+</div>
+
 <div class="page-wrap">
-    <button onclick="logout()" class="btn-secondary">Logout</button>
+    <div class="page-header">
+        <h1 style="font-size:22px;font-weight:500;color:var(--ink-light);">Welcome, Family Member</h1>
+        <button onclick="logout()" class="btn-secondary">Logout</button>
+    </div>
 
+    <!-- REGISTRATION -->
     <div class="card">
-        <h2>Family Registration</h2>
+        <h2>🏡 Family Registration</h2>
+        <p style="color:var(--ink-light);font-size:14px;margin-bottom:20px;">Submit your information to be connected with community resources and opportunities. Your submission will be reviewed by our team.</p>
         <form id="familyForm">
-            <input type="text" id="familyName" placeholder="Name" required>
-            <input type="email" id="familyEmail" placeholder="Email" required>
-            <input type="text" id="familyPhone" placeholder="Phone" required>
-            <input type="text" id="familyNeeds" placeholder="Needs / Interests" required>
-
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                <input type="text" id="familyName" placeholder="Full Name" required>
+                <input type="email" id="familyEmail" placeholder="Email Address" required>
+            </div>
+            <input type="text" id="familyPhone" placeholder="Phone Number" required>
+            <input type="text" id="familyNeeds" placeholder="Needs / Interests (e.g. childcare, food assistance, job training)" required>
             <label class="checkbox-row">
                 <input type="checkbox" id="familySubscribed">
-                Subscribe to weekly newsletter
+                Subscribe to our weekly newsletter
             </label>
-
-            <button type="submit" class="btn-primary">Submit</button>
+            <button type="submit" class="btn-primary">Submit Registration</button>
         </form>
     </div>
 
+    <!-- AVAILABLE OPPORTUNITIES -->
     <div class="card">
-        <h2>Available Opportunities</h2>
+        <h2>📋 Available Opportunities</h2>
+        <p style="color:var(--ink-light);font-size:14px;margin-bottom:20px;">Browse all current opportunities available to community members.</p>
         <div id="allOpportunities"></div>
     </div>
 
+    <!-- MATCHED OPPORTUNITIES -->
     <div class="card">
-        <h2>Matched Opportunities</h2>
+        <h2>✨ Your Matched Opportunities</h2>
+        <p style="color:var(--ink-light);font-size:14px;margin-bottom:20px;">These opportunities were selected based on your registered needs and interests.</p>
         <div id="familyMatches"></div>
     </div>
 
+    <!-- NEWSLETTERS -->
     <div class="card">
-        <h2>Weekly Newsletters</h2>
+        <h2>📰 Weekly Newsletters</h2>
         <div id="newsletterSection"></div>
     </div>
 
+    <!-- URGENT ALERTS -->
     <div class="card">
-        <h2>Urgent Alerts</h2>
+        <h2>🚨 Urgent Alerts</h2>
         <div id="alertSection"></div>
     </div>
 </div>
