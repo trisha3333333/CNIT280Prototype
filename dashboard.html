@@ -1,112 +1,129 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Employee Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Employee Dashboard — Whispering Hills</title>
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
 <div class="dashboard-layout">
+    <aside class="sidebar">
+        <div class="sidebar-logo">Whispering Hills</div>
+        <div class="sidebar-sub">Employee Portal</div>
+        <div class="sidebar-divider"></div>
+        <p style="font-size:13px;color:rgba(255,255,255,0.5);margin-bottom:auto;">
+            Manage families, volunteers, opportunities, newsletters, and site content from this dashboard.
+        </p>
+        <div style="margin-top:auto;padding-top:24px;">
+            <button onclick="logout()" class="btn-secondary">Logout</button>
+        </div>
+    </aside>
 
-<aside class="sidebar">
-    <h2>Whispering Hills</h2>
-    <p>Employee Portal</p>
-    <button onclick="logout()" class="btn-secondary">Logout</button>
-</aside>
+    <main class="dashboard-main">
+        <h1>Employee Dashboard</h1>
 
-<main class="dashboard-main">
+        <!-- FAMILIES -->
+        <div class="card">
+            <h2>👨‍👩‍👧 Registered Families</h2>
+            <table id="familyTable">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Needs / Interests</th>
+                        <th>Newsletter</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
 
-<h1>Employee Dashboard</h1>
+        <!-- VOLUNTEERS -->
+        <div class="card">
+            <h2>🤝 Registered Volunteers</h2>
+            <table id="volunteerTable">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Skills</th>
+                        <th>Availability</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
 
-<div class="card">
-    <h2>Families</h2>
-    <table id="familyTable">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Phone</th>
-                <th>Needs</th>
-                <th>Subscribed</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
-</div>
+        <!-- OPPORTUNITIES -->
+        <div class="card">
+            <h2>📋 Manage Opportunities</h2>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                <input type="text" id="oppTitle" placeholder="Opportunity Title">
+                <input type="text" id="oppType" placeholder="Type (job, social, volunteer)">
+            </div>
+            <input type="text" id="oppKeyword" placeholder="Matching Keyword (e.g. childcare, food, housing)">
+            <textarea id="oppDescription" placeholder="Opportunity Description"></textarea>
+            <button onclick="addOpportunity()" class="btn-primary">+ Add Opportunity</button>
+            <div id="opportunityList" class="stack-space"></div>
+        </div>
 
-<div class="card">
-    <h2>Volunteers</h2>
-    <table id="volunteerTable">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Skills</th>
-                <th>Availability</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
-</div>
+        <!-- MATCHING -->
+        <div class="card">
+            <h2>🔗 Match Families to Opportunities</h2>
+            <p style="color:var(--ink-light);font-size:14px;margin-bottom:16px;">Run the matching algorithm to automatically pair families with relevant opportunities based on their needs.</p>
+            <button onclick="matchFamilies()" class="btn-primary">Run Matching</button>
+            <div id="matchResults" class="stack-space"></div>
+        </div>
 
-<div class="card">
-    <h2>Opportunities</h2>
-    <input type="text" id="oppTitle" placeholder="Opportunity Title">
-    <input type="text" id="oppType" placeholder="Type (job, social, volunteer)">
-    <input type="text" id="oppKeyword" placeholder="Matching Keyword">
-    <textarea id="oppDescription" placeholder="Opportunity Description"></textarea>
-    <button onclick="addOpportunity()" class="btn-primary">Add Opportunity</button>
+        <!-- QUERY -->
+        <div class="card">
+            <h2>🔍 Query Tool</h2>
+            <div style="display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap;">
+                <input type="text" id="queryInput" placeholder="Search by family name or need…" style="flex:1;margin-bottom:0;">
+                <button onclick="runQuery()" class="btn-primary">Search</button>
+                <button onclick="generateContactList()" class="btn-secondary">Contact List</button>
+            </div>
+            <div id="queryResults" class="stack-space"></div>
+        </div>
 
-    <div id="opportunityList" class="stack-space"></div>
-</div>
+        <!-- PENDING -->
+        <div class="card">
+            <h2>⏳ Pending Family Submissions</h2>
+            <div id="pendingSubmissions"></div>
+        </div>
 
-<div class="card">
-    <h2>Match Families to Opportunities</h2>
-    <button onclick="matchFamilies()" class="btn-primary">Run Matching</button>
-    <div id="matchResults"></div>
-</div>
+        <!-- NEWSLETTER -->
+        <div class="card">
+            <h2>📰 Weekly Newsletter</h2>
+            <input type="text" id="newsletterTitle" placeholder="Newsletter Title">
+            <textarea id="newsletterMessage" placeholder="Write your newsletter message here…"></textarea>
+            <button onclick="sendNewsletter()" class="btn-primary">Send Newsletter</button>
+            <div id="newsletterStatus"></div>
+        </div>
 
-<div class="card">
-    <h2>Query Tool</h2>
-    <input type="text" id="queryInput" placeholder="Search families by need or interest">
-    <button onclick="runQuery()" class="btn-primary">Search</button>
-    <button onclick="generateContactList()" class="btn-secondary">Generate Contact List</button>
-    <div id="queryResults"></div>
-</div>
+        <!-- URGENT ALERTS -->
+        <div class="card">
+            <h2>🚨 Urgent Opportunity Alert</h2>
+            <input type="text" id="alertTitle" placeholder="Alert Title">
+            <textarea id="alertMessage" placeholder="Write your urgent message here…"></textarea>
+            <button onclick="sendUrgentAlert()" class="btn-primary">Send Alert</button>
+            <div id="alertStatus"></div>
+        </div>
 
-<div class="card">
-    <h2>Pending Family Submissions</h2>
-    <div id="pendingSubmissions"></div>
-</div>
-
-<div class="card">
-    <h2>Weekly Newsletter</h2>
-    <input type="text" id="newsletterTitle" placeholder="Newsletter Title">
-    <textarea id="newsletterMessage" placeholder="Write newsletter message"></textarea>
-    <button onclick="sendNewsletter()" class="btn-primary">Send Newsletter</button>
-    <div id="newsletterStatus"></div>
-</div>
-
-<div class="card">
-    <h2>Urgent Opportunity Alert</h2>
-    <input type="text" id="alertTitle" placeholder="Urgent Alert Title">
-    <textarea id="alertMessage" placeholder="Write urgent message"></textarea>
-    <button onclick="sendUrgentAlert()" class="btn-primary">Send Urgent Alert</button>
-    <div id="alertStatus"></div>
-</div>
-
-<div class="card">
-    <h2>Update Public Website</h2>
-    <input type="text" id="siteAbout" placeholder="Update About Section">
-    <textarea id="siteServices" placeholder="Enter services separated by commas"></textarea>
-    <button onclick="updateWebsiteContent()" class="btn-primary">Update Website</button>
-    <div id="siteStatus"></div>
-</div>
-
-</main>
+        <!-- WEBSITE -->
+        <div class="card">
+            <h2>🌐 Update Public Website</h2>
+            <input type="text" id="siteAbout" placeholder="Update the About section text">
+            <textarea id="siteServices" placeholder="Enter services separated by commas (e.g. Food pantry, Job training, Childcare)"></textarea>
+            <button onclick="updateWebsiteContent()" class="btn-primary">Update Website</button>
+            <div id="siteStatus"></div>
+        </div>
+    </main>
 </div>
 
 <script src="js/script.js"></script>
