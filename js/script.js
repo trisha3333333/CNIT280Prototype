@@ -125,17 +125,22 @@ function loadFamiliesTable() {
     const families = getData("families");
     familyTable.innerHTML = "";
 
+    if (families.length === 0) {
+        familyTable.innerHTML = `<tr><td colspan="6" style="color:var(--ink-light);text-align:center;padding:24px;">No registered families yet.</td></tr>`;
+        return;
+    }
+
     families.forEach((f, i) => {
         familyTable.innerHTML += `
         <tr>
-            <td>${f.name}</td>
+            <td><strong>${f.name}</strong></td>
             <td>${f.email}</td>
             <td>${f.phone}</td>
             <td>${f.needs}</td>
-            <td>${f.subscribed ? "Yes" : "No"}</td>
+            <td><span style="color:${f.subscribed ? 'var(--sage)' : 'var(--ink-light)'};font-weight:600;">${f.subscribed ? "✓ Yes" : "No"}</span></td>
             <td>
                 <button class="btn-secondary" onclick="editFamily(${i})">Edit</button>
-                <button class="btn-secondary" onclick="deleteFamily(${i})">Delete</button>
+                <button class="btn-danger" onclick="deleteFamily(${i})">Delete</button>
             </td>
         </tr>`;
     });
@@ -148,16 +153,21 @@ function loadVolunteerTable() {
     const volunteers = getData("volunteers");
     volunteerTable.innerHTML = "";
 
+    if (volunteers.length === 0) {
+        volunteerTable.innerHTML = `<tr><td colspan="5" style="color:var(--ink-light);text-align:center;padding:24px;">No registered volunteers yet.</td></tr>`;
+        return;
+    }
+
     volunteers.forEach((v, i) => {
         volunteerTable.innerHTML += `
         <tr>
-            <td>${v.name}</td>
+            <td><strong>${v.name}</strong></td>
             <td>${v.email}</td>
             <td>${v.skills}</td>
             <td>${v.availability}</td>
             <td>
                 <button class="btn-secondary" onclick="editVolunteer(${i})">Edit</button>
-                <button class="btn-secondary" onclick="deleteVolunteer(${i})">Delete</button>
+                <button class="btn-danger" onclick="deleteVolunteer(${i})">Delete</button>
             </td>
         </tr>`;
     });
@@ -171,19 +181,21 @@ function loadOpportunityList() {
     container.innerHTML = "";
 
     if (opportunities.length === 0) {
-        container.innerHTML = "<p>No opportunities added yet.</p>";
+        container.innerHTML = "<p style='color:var(--ink-light);'>No opportunities added yet.</p>";
         return;
     }
 
     opportunities.forEach((o, i) => {
         container.innerHTML += `
         <div class="item-box">
-            <strong>${o.title}</strong><br>
-            Type: ${o.type}<br>
-            Keyword: ${o.keyword}<br>
-            ${o.description}<br><br>
-            <button class="btn-secondary" onclick="editOpportunity(${i})">Edit</button>
-            <button class="btn-secondary" onclick="deleteOpportunity(${i})">Delete</button>
+            <span class="opp-badge">${o.type}</span>
+            <strong style="display:block;font-size:16px;margin-bottom:4px;">${o.title}</strong>
+            <p style="color:var(--ink-light);font-size:14px;margin-bottom:8px;">Keyword: <em>${o.keyword}</em></p>
+            <p style="font-size:14px;">${o.description}</p>
+            <div style="margin-top:12px;">
+                <button class="btn-secondary" onclick="editOpportunity(${i})">Edit</button>
+                <button class="btn-danger" onclick="deleteOpportunity(${i})">Delete</button>
+            </div>
         </div>`;
     });
 }
@@ -200,13 +212,7 @@ function addOpportunity() {
     }
 
     const opportunities = getData("opportunities");
-    opportunities.push({
-        id: Date.now(),
-        title,
-        type,
-        keyword,
-        description
-    });
+    opportunities.push({ id: Date.now(), title, type, keyword, description });
     setData("opportunities", opportunities);
 
     document.getElementById("oppTitle").value = "";
@@ -227,13 +233,10 @@ function editFamily(index) {
 
     const newName = prompt("Edit family name:", family.name);
     if (newName === null) return;
-
     const newEmail = prompt("Edit family email:", family.email);
     if (newEmail === null) return;
-
     const newPhone = prompt("Edit family phone:", family.phone);
     if (newPhone === null) return;
-
     const newNeeds = prompt("Edit family needs/interests:", family.needs);
     if (newNeeds === null) return;
 
@@ -249,6 +252,7 @@ function editFamily(index) {
 }
 
 function deleteFamily(index) {
+    if (!confirm("Delete this family record?")) return;
     const families = getData("families");
     families.splice(index, 1);
     setData("families", families);
@@ -262,13 +266,10 @@ function editVolunteer(index) {
 
     const newName = prompt("Edit volunteer name:", volunteer.name);
     if (newName === null) return;
-
     const newEmail = prompt("Edit volunteer email:", volunteer.email);
     if (newEmail === null) return;
-
     const newSkills = prompt("Edit volunteer skills:", volunteer.skills);
     if (newSkills === null) return;
-
     const newAvailability = prompt("Edit volunteer availability:", volunteer.availability);
     if (newAvailability === null) return;
 
@@ -283,6 +284,7 @@ function editVolunteer(index) {
 }
 
 function deleteVolunteer(index) {
+    if (!confirm("Delete this volunteer?")) return;
     const volunteers = getData("volunteers");
     volunteers.splice(index, 1);
     setData("volunteers", volunteers);
@@ -295,13 +297,10 @@ function editOpportunity(index) {
 
     const newTitle = prompt("Edit opportunity title:", opp.title);
     if (newTitle === null) return;
-
     const newType = prompt("Edit opportunity type:", opp.type);
     if (newType === null) return;
-
     const newKeyword = prompt("Edit keyword:", opp.keyword);
     if (newKeyword === null) return;
-
     const newDescription = prompt("Edit description:", opp.description);
     if (newDescription === null) return;
 
@@ -312,7 +311,6 @@ function editOpportunity(index) {
 
     opportunities[index] = opp;
     setData("opportunities", opportunities);
-
     loadOpportunityList();
     loadFamilyOpportunities();
     loadFamilyMatches();
@@ -320,10 +318,10 @@ function editOpportunity(index) {
 }
 
 function deleteOpportunity(index) {
+    if (!confirm("Delete this opportunity?")) return;
     const opportunities = getData("opportunities");
     opportunities.splice(index, 1);
     setData("opportunities", opportunities);
-
     loadOpportunityList();
     loadFamilyOpportunities();
     loadFamilyMatches();
@@ -339,20 +337,19 @@ function loadPendingForms() {
     container.innerHTML = "";
 
     if (pending.length === 0) {
-        container.innerHTML = "<p>No pending submissions.</p>";
+        container.innerHTML = "<p style='color:var(--ink-light);'>No pending submissions.</p>";
         return;
     }
 
     pending.forEach((p, i) => {
         container.innerHTML += `
         <div class="item-box">
-            <strong>${p.name}</strong><br>
-            ${p.email}<br>
-            ${p.phone}<br>
-            Needs: ${p.needs}<br>
-            Newsletter: ${p.subscribed ? "Yes" : "No"}<br><br>
+            <strong style="font-size:16px;">${p.name}</strong>
+            <p style="color:var(--ink-light);font-size:13px;margin:4px 0 2px;">${p.email} · ${p.phone}</p>
+            <p style="font-size:14px;margin-bottom:4px;"><strong>Needs:</strong> ${p.needs}</p>
+            <p style="font-size:14px;margin-bottom:14px;"><strong>Newsletter:</strong> ${p.subscribed ? "✓ Subscribed" : "Not subscribed"}</p>
             <button class="btn-primary" onclick="approveSubmission(${i})">Approve</button>
-            <button class="btn-secondary" onclick="rejectSubmission(${i})">Reject</button>
+            <button class="btn-danger" onclick="rejectSubmission(${i})" style="margin-left:8px;">Reject</button>
         </div>`;
     });
 }
@@ -387,23 +384,29 @@ function matchFamilies() {
 
     let results = "";
 
+    if (families.length === 0) {
+        resultsBox.innerHTML = "<p style='color:var(--ink-light);margin-top:12px;'>No family records available to match.</p>";
+        return;
+    }
+
     families.forEach(family => {
         const matches = opportunities.filter(opp =>
             family.needs.toLowerCase().includes(opp.keyword.toLowerCase())
         );
 
+        results += `<div class="item-box" style="margin-top:12px;">
+            <strong style="font-size:15px;">👨‍👩‍👧 ${family.name}</strong><br>`;
         if (matches.length > 0) {
-            results += `<div class="item-box"><strong>${family.name}</strong><br>`;
             matches.forEach(m => {
-                results += `${m.title} (${m.type})<br>`;
+                results += `<span class="opp-badge" style="margin-top:8px;">${m.type}</span> <span style="font-size:14px;">${m.title}</span><br>`;
             });
-            results += `</div>`;
         } else {
-            results += `<div class="item-box"><strong>${family.name}</strong><br>No matches found.</div>`;
+            results += `<span style="color:var(--ink-light);font-size:14px;">No matches found for current needs.</span>`;
         }
+        results += `</div>`;
     });
 
-    resultsBox.innerHTML = results || "<p>No family records available.</p>";
+    resultsBox.innerHTML = results;
 }
 
 /* ---------- QUERY TOOL ---------- */
@@ -419,18 +422,17 @@ function runQuery() {
     );
 
     if (matches.length === 0) {
-        resultsBox.innerHTML = "<p>No matching families found.</p>";
+        resultsBox.innerHTML = "<p style='color:var(--ink-light);margin-top:12px;'>No matching families found.</p>";
         return;
     }
 
     let html = "";
     matches.forEach(f => {
         html += `
-        <div class="item-box">
-            <strong>${f.name}</strong><br>
-            Email: ${f.email}<br>
-            Phone: ${f.phone}<br>
-            Needs: ${f.needs}
+        <div class="item-box" style="margin-top:12px;">
+            <strong>${f.name}</strong>
+            <p style="font-size:14px;color:var(--ink-light);">${f.email} · ${f.phone}</p>
+            <p style="font-size:14px;">Needs: ${f.needs}</p>
         </div>`;
     });
 
@@ -443,13 +445,13 @@ function generateContactList() {
     if (!resultsBox) return;
 
     if (families.length === 0) {
-        resultsBox.innerHTML = "<p>No families available.</p>";
+        resultsBox.innerHTML = "<p style='color:var(--ink-light);margin-top:12px;'>No families available.</p>";
         return;
     }
 
-    let html = "<div class='item-box'><strong>Contact List</strong><br><br>";
+    let html = `<div class="item-box" style="margin-top:12px;"><strong style="font-size:15px;">📋 Contact List</strong><br><br>`;
     families.forEach(f => {
-        html += `${f.name} - ${f.email} - ${f.phone}<br>`;
+        html += `<p style="font-size:14px;padding:6px 0;border-bottom:1px solid var(--border);">${f.name} &mdash; ${f.email} &mdash; ${f.phone}</p>`;
     });
     html += "</div>";
 
@@ -480,7 +482,7 @@ function sendNewsletter() {
     document.getElementById("newsletterMessage").value = "";
 
     const subscribedFamilies = getData("families").filter(f => f.subscribed);
-    status.innerHTML = `<p>Newsletter sent to ${subscribedFamilies.length} subscribed family(s).</p>`;
+    status.innerHTML = `<p>✓ Newsletter sent to ${subscribedFamilies.length} subscribed family(s).</p>`;
     loadNewsletters();
 }
 
@@ -496,27 +498,27 @@ function loadNewsletters() {
     const currentFamily = families.find(f => f.email === activeEmail) || pending.find(f => f.email === activeEmail);
 
     if (!currentFamily) {
-        container.innerHTML = "<p>Submit family information to view newsletters.</p>";
+        container.innerHTML = "<p style='color:var(--ink-light);'>Submit your family information to view newsletters.</p>";
         return;
     }
 
     if (!currentFamily.subscribed) {
-        container.innerHTML = "<p>You are not subscribed to weekly newsletters.</p>";
+        container.innerHTML = "<p style='color:var(--ink-light);'>You are not subscribed to weekly newsletters.</p>";
         return;
     }
 
     if (newsletters.length === 0) {
-        container.innerHTML = "<p>No newsletters have been sent yet.</p>";
+        container.innerHTML = "<p style='color:var(--ink-light);'>No newsletters have been sent yet.</p>";
         return;
     }
 
     let html = "";
     newsletters.forEach(n => {
         html += `
-        <div class="item-box">
-            <strong>${n.title}</strong><br>
-            ${n.message}<br><br>
-            <small>Sent on ${n.date}</small>
+        <div class="item-box newsletter-item">
+            <strong style="font-size:16px;">${n.title}</strong>
+            <p style="font-size:14px;margin:8px 0;">${n.message}</p>
+            <small style="color:var(--ink-light);">Sent on ${n.date}</small>
         </div>`;
     });
 
@@ -547,7 +549,7 @@ function sendUrgentAlert() {
     document.getElementById("alertMessage").value = "";
 
     const familyCount = getData("families").length;
-    status.innerHTML = `<p>Urgent alert sent to ${familyCount} family record(s).</p>`;
+    status.innerHTML = `<p>✓ Urgent alert sent to ${familyCount} family record(s).</p>`;
     loadUrgentAlerts();
 }
 
@@ -558,17 +560,17 @@ function loadUrgentAlerts() {
     const alerts = getData("alerts");
 
     if (alerts.length === 0) {
-        container.innerHTML = "<p>No urgent alerts right now.</p>";
+        container.innerHTML = "<p style='color:var(--ink-light);'>No urgent alerts right now.</p>";
         return;
     }
 
     let html = "";
     alerts.forEach(a => {
         html += `
-        <div class="item-box">
-            <strong>${a.title}</strong><br>
-            ${a.message}<br><br>
-            <small>${a.date}</small>
+        <div class="item-box alert-item">
+            <strong style="font-size:16px;">🚨 ${a.title}</strong>
+            <p style="font-size:14px;margin:8px 0;">${a.message}</p>
+            <small style="color:var(--ink-light);">${a.date}</small>
         </div>`;
     });
 
@@ -583,7 +585,7 @@ function loadFamilyOpportunities() {
     const opportunities = getData("opportunities");
 
     if (opportunities.length === 0) {
-        container.innerHTML = "<p>No opportunities available yet.</p>";
+        container.innerHTML = "<p style='color:var(--ink-light);'>No opportunities available yet.</p>";
         return;
     }
 
@@ -591,9 +593,9 @@ function loadFamilyOpportunities() {
     opportunities.forEach(o => {
         html += `
         <div class="item-box">
-            <strong>${o.title}</strong><br>
-            Type: ${o.type}<br>
-            ${o.description}
+            <span class="opp-badge">${o.type}</span>
+            <strong style="display:block;font-size:16px;margin:6px 0 4px;">${o.title}</strong>
+            <p style="font-size:14px;color:var(--ink-light);">${o.description}</p>
         </div>`;
     });
 
@@ -612,7 +614,7 @@ function loadFamilyMatches() {
     const currentFamily = families.find(f => f.email === activeEmail) || pending.find(f => f.email === activeEmail);
 
     if (!currentFamily) {
-        container.innerHTML = "<p>Submit your information to see matches.</p>";
+        container.innerHTML = "<p style='color:var(--ink-light);'>Submit your information to see matched opportunities.</p>";
         return;
     }
 
@@ -621,17 +623,17 @@ function loadFamilyMatches() {
     );
 
     if (matches.length === 0) {
-        container.innerHTML = "<p>No matched opportunities yet.</p>";
+        container.innerHTML = "<p style='color:var(--ink-light);'>No matched opportunities yet. Try adding more details to your needs.</p>";
         return;
     }
 
     let html = "";
     matches.forEach(m => {
         html += `
-        <div class="item-box">
-            <strong>${m.title}</strong><br>
-            Type: ${m.type}<br>
-            ${m.description}
+        <div class="item-box" style="border-left:4px solid var(--sage);">
+            <span class="opp-badge">${m.type}</span>
+            <strong style="display:block;font-size:16px;margin:6px 0 4px;">${m.title}</strong>
+            <p style="font-size:14px;color:var(--ink-light);">${m.description}</p>
         </div>`;
     });
 
@@ -657,7 +659,7 @@ function updateWebsiteContent() {
     document.getElementById("siteAbout").value = "";
     document.getElementById("siteServices").value = "";
 
-    status.innerHTML = "<p>Website content updated.</p>";
+    status.innerHTML = "<p>✓ Website content updated successfully.</p>";
     loadPublicWebsite();
 }
 
@@ -676,23 +678,26 @@ function loadPublicWebsite() {
 
     if (servicesBox) {
         if (services.length === 0) {
-            servicesBox.innerHTML = "<p>No services listed yet.</p>";
+            servicesBox.innerHTML = "<p style='color:var(--ink-light);'>No services listed yet.</p>";
         } else {
-            servicesBox.innerHTML = services.map(s => `<div class="item-box">${s}</div>`).join("");
+            servicesBox.innerHTML = services.map(s => `
+                <div class="feature-card">
+                    <div class="feature-icon icon-green">✓</div>
+                    <p style="font-size:15px;font-weight:500;margin-top:12px;">${s}</p>
+                </div>`).join("");
         }
     }
 
     if (opportunitiesBox) {
         if (opportunities.length === 0) {
-            opportunitiesBox.innerHTML = "<p>No public opportunities posted yet.</p>";
+            opportunitiesBox.innerHTML = "<p style='color:var(--ink-light);'>No public opportunities posted yet.</p>";
         } else {
             opportunitiesBox.innerHTML = opportunities.map(o => `
-                <div class="item-box">
-                    <strong>${o.title}</strong><br>
-                    Type: ${o.type}<br>
-                    ${o.description}
-                </div>
-            `).join("");
+                <div class="feature-card">
+                    <span class="opp-badge">${o.type}</span>
+                    <h3 style="margin:10px 0 8px;font-size:18px;">${o.title}</h3>
+                    <p>${o.description}</p>
+                </div>`).join("");
         }
     }
 }
